@@ -4,6 +4,12 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { getAuthInfoFromCookie } from '@/lib/auth';
 
+// ==========================================
+// 💡 终极密码配置：尝试读取环境变量，如果平台读取失败，则使用保底密码
+// 您可以将 'Admin123!' 修改为您想要的任何密码，此密码将用于登录
+// ==========================================
+const SITE_PASSWORD = process.env.PASSWORD || 'Admin123!';
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -14,7 +20,7 @@ export async function middleware(request: NextRequest) {
 
   const storageType = process.env.NEXT_PUBLIC_STORAGE_TYPE || 'localstorage';
 
-  if (!process.env.PASSWORD) {
+  if (!SITE_PASSWORD) {
     // 如果没有设置密码，重定向到警告页面
     const warningUrl = new URL('/warning', request.url);
     return NextResponse.redirect(warningUrl);
@@ -29,7 +35,7 @@ export async function middleware(request: NextRequest) {
 
   // localstorage模式：在middleware中完成验证
   if (storageType === 'localstorage') {
-    if (!authInfo.password || authInfo.password !== process.env.PASSWORD) {
+    if (!authInfo.password || authInfo.password !== SITE_PASSWORD) {
       return handleAuthFailure(request, pathname);
     }
     return NextResponse.next();
@@ -46,7 +52,7 @@ export async function middleware(request: NextRequest) {
     const isValidSignature = await verifySignature(
       authInfo.username,
       authInfo.signature,
-      process.env.PASSWORD || ''
+      SITE_PASSWORD
     );
 
     // 签名验证通过即可
@@ -125,7 +131,7 @@ function shouldSkipAuth(pathname: string): boolean {
     '/icons/',
     '/logo.png',
     '/screenshot.png',
-    // --- 以下是为您新增的 EdgeOne 兼容白名单 ---
+    // --- 修复 EdgeOne 兼容性：手动添加白名单路由，防止无限重定向 ---
     '/login',
     '/warning',
     '/api/login',
