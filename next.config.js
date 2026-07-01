@@ -2,6 +2,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 const nextConfig = {
+  // --- 新增：全局强制注入环境变量，解决 EdgeOne 运行时变量丢失的问题 ---
+  env: {
+    PASSWORD: process.env.PASSWORD || 'Admin123!',
+  },
+
   eslint: {
     dirs: ['src'],
   },
