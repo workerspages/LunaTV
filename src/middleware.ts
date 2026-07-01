@@ -125,7 +125,7 @@ function shouldSkipAuth(pathname: string): boolean {
     '/icons/',
     '/logo.png',
     '/screenshot.png',
-    // --- 修复 EdgeOne 兼容性：手动添加白名单路由，防止无限重定向 ---
+    // --- 以下是为您新增的 EdgeOne 兼容白名单 ---
     '/login',
     '/warning',
     '/api/login',
