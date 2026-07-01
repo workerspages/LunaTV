@@ -125,6 +125,14 @@ function shouldSkipAuth(pathname: string): boolean {
     '/icons/',
     '/logo.png',
     '/screenshot.png',
+    // --- 修复 EdgeOne 兼容性：手动添加白名单路由，防止无限重定向 ---
+    '/login',
+    '/warning',
+    '/api/login',
+    '/api/register',
+    '/api/logout',
+    '/api/cron',
+    '/api/server-config',
   ];
 
   return skipPaths.some((path) => pathname.startsWith(path));
